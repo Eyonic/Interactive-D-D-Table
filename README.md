@@ -11,10 +11,14 @@ This project turns any TV into a living, interactive Dungeons & Dragons map usin
 - 📺 **Live Map Display**: Top-down maps shown on a TV in real-time.
 - 🔊 **Sound Effects**: 7 dedicated buttons trigger atmospheric sounds.
 - 🎵 **Background Music**: Changes dynamically with the map.
-- 🎮 **Custom Keypad**: 
-  - 7 sound effect buttons
-  - 2 map navigation buttons (next/previous)
-  - 1 enter button to confirm or trigger actions
+
+-🔊 9 Buttons – Used for sound effects by default.
+-🗺️ Map Switching Mode – Press the Set button, then one of the 9 buttons to switch directly to a corresponding map.
+-🎬 1 Set Button – Activates "map select" mode.
+
+Example:
+Press Set, then Button 3 → instantly switches to Map 3, with its associated background music and sound theme.
+
 - 🐍 Powered by Raspberry Pi Zero WH (lightweight & portable)
 
 ## 🛠️ Components
