@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pixels Per Inch Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>PPI & Pixels Per Inch Calculator</h2>
+  
+  <label for="size">Screen Size (inches):</label>
+  <input type="number" id="size" placeholder="e.g., 24">
+
+  <label for="resolution">Resolution:</label>
+  <select id="resolution">
+    <option value="1920x1080">1920×1080 (1080p)</option>
+    <option value="2560x1440">2560×1440 (1440p)</option>
+    <option value="3840x2160">3840×2160 (4K)</option>
+    <option value="7680x4320">7680×4320 (8K)</option>
+  </select>
+
+  <button onclick="calculatePPI()">Calculate</button>
+
+  <div id="output"></div>
+
+  <script>
+    function calculatePPI() {
+      const size = parseFloat(document.getElementById("size").value);
+      const res = document.getElementById("resolution").value.split("x");
+      const width = parseInt(res[0]);
+      const height = parseInt(res[1]);
+
+      if (!size || size <= 0) {
+        document.getElementById("output").innerText = "Please enter a valid screen size.";
+        return;
+      }
+
+      const diagonalPixels = Math.sqrt(width * width + height * height);
+      const ppi = diagonalPixels / size;
+      document.getElementById("output").innerText = 
+        `1 inch = ${ppi.toFixed(2)} pixels`;
+    }
+  </script>
+</body>
+</html>

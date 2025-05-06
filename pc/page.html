@@ -1,195 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Interactive Soundboard Grid Tool</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #222;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    canvas {
-      border: 1px solid white;
-      margin-top: 20px;
-      max-width: 100%;
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .controls input, .controls button {
-      padding: 5px;
-      font-size: 14px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interactive Map + Grid Tool</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+background-color: #222;
+color: white;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 20px;
+}
+canvas {
+border: 1px solid white;
+margin-top: 20px;
+max-width: 100%;
+}
+.controls {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 10px;
+margin-top: 10px;
+}
+.controls input, .controls button {
+padding: 5px;
+font-size: 14px;
+}
+</style>
 </head>
 <body>
+<h1>Interactive Map + Grid Tool</h1>
+<input type="file" id="media-upload" accept="image/*,video/*,.gif" />
+<div class="controls">
+<label>Cols:
+<input type="number" id="grid-cols" value="5" min="1" /></label>
+<label>Rows:
+<input type="number" id="grid-rows" value="5" min="1" /></label>
+<!-- Remove cell width/height inputs since they're now calculated -->
+<button onclick="toggleGridType()">Toggle Grid Type</button>
+<button onclick="applyGrid()">Apply Grid</button>
+<button onclick="saveCanvas()">Save Map</button>
+</div>
+<canvas id="canvas"></canvas>
 
-  <h1>Interactive Map + Grid Tool</h1>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const mediaUpload = document.getElementById('media-upload');
+let mediaElement = null;
+let mediaType = null;
+let isHexGrid = false;
 
-  <input type="file" id="media-upload" accept="image/*,video/*,.gif" />
+function getGridSettings() {
+return {
+cols: parseInt(document.getElementById('grid-cols').value, 10),
+rows: parseInt(document.getElementById('grid-rows').value, 10),
+// Calculate cell dimensions based on canvas size
+cellWidth: canvas.width / parseInt(document.getElementById('grid-cols').value, 10),
+cellHeight: canvas.height / parseInt(document.getElementById('grid-rows').value, 10)
+};
+}
 
-  <div class="controls">
-    <label>Cols: <input type="number" id="grid-cols" value="5" min="1" /></label>
-    <label>Rows: <input type="number" id="grid-rows" value="5" min="1" /></label>
-    <!-- Remove cell width/height inputs since they're now calculated -->
-    <button onclick="toggleGridType()">Toggle Grid Type</button>
-    <button onclick="applyGrid()">Apply Grid</button>
-  </div>
+mediaUpload.addEventListener('change', handleMediaUpload);
 
-  <canvas id="canvas"></canvas>
+function handleMediaUpload(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function () {
+const dataUrl = reader.result;
+if (file.type.startsWith('image')) {
+loadImage(dataUrl);
+} else if (file.type.startsWith('video') || file.type === 'image/gif') {
+loadMedia(dataUrl, file.type);
+}
+};
+reader.readAsDataURL(file);
+}
 
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+function loadImage(dataUrl) {
+const img = new Image();
+img.src = dataUrl;
+img.onload = () => {
+mediaType = 'image';
+mediaElement = img;
+updateCanvasSize(img.width, img.height);
+drawMedia();
+applyGrid(); // Draw initial grid
+};
+}
 
-    const mediaUpload = document.getElementById('media-upload');
-    let mediaElement = null;
-    let mediaType = null;
-    let isHexGrid = false;
+function loadMedia(dataUrl, type) {
+mediaType = type;
+if (type.startsWith('video')) {
+mediaElement = document.createElement('video');
+mediaElement.src = dataUrl;
+mediaElement.loop = true;
+mediaElement.autoplay = true;
+mediaElement.muted = true;
+mediaElement.play();
+} else {
+mediaElement = new Image();
+mediaElement.src = dataUrl;
+}
+mediaElement.onloadedmetadata = mediaElement.onplay = () => {
+updateCanvasSize(mediaElement.videoWidth || mediaElement.width, mediaElement.videoHeight || mediaElement.height);
+drawMedia();
+applyGrid(); // Draw initial grid
+};
+}
 
-    function getGridSettings() {
-      return {
-        cols: parseInt(document.getElementById('grid-cols').value, 10),
-        rows: parseInt(document.getElementById('grid-rows').value, 10),
-        // Calculate cell dimensions based on canvas size
-        cellWidth: canvas.width / parseInt(document.getElementById('grid-cols').value, 10),
-        cellHeight: canvas.height / parseInt(document.getElementById('grid-rows').value, 10)
-      };
-    }
+function updateCanvasSize(width, height) {
+canvas.width = width;
+canvas.height = height;
+}
 
-    mediaUpload.addEventListener('change', handleMediaUpload);
+function drawMedia() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+if (!mediaElement) return;
+ctx.drawImage(mediaElement, 0, 0, canvas.width, canvas.height);
+}
 
-    function handleMediaUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+function toggleGridType() {
+isHexGrid = !isHexGrid;
+applyGrid();
+}
 
-      const reader = new FileReader();
-      reader.onload = function () {
-        const dataUrl = reader.result;
-        if (file.type.startsWith('image')) {
-          loadImage(dataUrl);
-        } else if (file.type.startsWith('video') || file.type === 'image/gif') {
-          loadMedia(dataUrl, file.type);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+function applyGrid() {
+drawMedia(); // Redraw media first
+const { cols, rows, cellWidth, cellHeight } = getGridSettings();
+if (isHexGrid) {
+drawHexGrid(cols, rows, cellWidth);
+} else {
+drawSquareGrid(cols, rows, cellWidth, cellHeight);
+}
+}
 
-    function loadImage(dataUrl) {
-      const img = new Image();
-      img.src = dataUrl;
-      img.onload = () => {
-        mediaType = 'image';
-        mediaElement = img;
-        updateCanvasSize(img.width, img.height);
-        drawMedia();
-        applyGrid(); // Draw initial grid
-      };
-    }
+function drawSquareGrid(cols, rows, cellWidth, cellHeight) {
+ctx.strokeStyle = '#00FF00';
+// Draw grid lines to cover the entire canvas
+for (let i = 0; i <= cols; i++) {
+ctx.beginPath();
+ctx.moveTo(i * cellWidth, 0);
+ctx.lineTo(i * cellWidth, canvas.height);
+ctx.stroke();
+}
+for (let j = 0; j <= rows; j++) {
+ctx.beginPath();
+ctx.moveTo(0, j * cellHeight);
+ctx.lineTo(canvas.width, j * cellHeight);
+ctx.stroke();
+}
+}
 
-    function loadMedia(dataUrl, type) {
-      mediaType = type;
-      if (type.startsWith('video')) {
-        mediaElement = document.createElement('video');
-        mediaElement.src = dataUrl;
-        mediaElement.loop = true;
-        mediaElement.autoplay = true;
-        mediaElement.muted = true;
-        mediaElement.play();
-      } else {
-        mediaElement = new Image();
-        mediaElement.src = dataUrl;
-      }
-      mediaElement.onloadedmetadata = mediaElement.onplay = () => {
-        updateCanvasSize(mediaElement.videoWidth || mediaElement.width, mediaElement.videoHeight || mediaElement.height);
-        drawMedia();
-        applyGrid(); // Draw initial grid
-      };
-    }
+function drawHexGrid(cols, rows, radius) {
+ctx.strokeStyle = '#00FFFF';
+const hexHeight = Math.sqrt(3) * radius;
+const hexWidth = 2 * radius;
+const horizSpacing = hexWidth * 0.75;
+// Calculate the number of rows and columns needed to cover the canvas
+const verticalCells = Math.ceil(canvas.height / hexHeight);
+const horizontalCells = Math.ceil(canvas.width / horizSpacing);
+for (let r = 0; r < verticalCells; r++) {
+for (let c = 0; c < horizontalCells; c++) {
+const x = c * horizSpacing;
+const y = r * hexHeight + (c % 2) * (hexHeight / 2);
+drawHexagon(x, y, radius);
+}
+}
+}
 
-    function updateCanvasSize(width, height) {
-      canvas.width = width;
-      canvas.height = height;
-    }
+function drawHexagon(x, y, radius) {
+ctx.beginPath();
+for (let i = 0; i < 6; i++) {
+const angle = (Math.PI / 3) * i;
+const px = x + radius * Math.cos(angle);
+const py = y + radius * Math.sin(angle);
+if (i === 0) {
+ctx.moveTo(px, py);
+} else {
+ctx.lineTo(px, py);
+}
+}
+ctx.closePath();
+ctx.stroke();
+}
 
-    function drawMedia() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (!mediaElement) return;
-      ctx.drawImage(mediaElement, 0, 0, canvas.width, canvas.height);
-    }
+function saveCanvas() {
+// Convert canvas to a data URL
+const dataURL = canvas.toDataURL("image/png");
 
-    function toggleGridType() {
-      isHexGrid = !isHexGrid;
-      applyGrid();
-    }
+// Create a temporary link element for download
+const link = document.createElement('a');
+link.download = 'interactive-map.png';
+link.href = dataURL;
 
-    function applyGrid() {
-      drawMedia(); // Redraw media first
-      const { cols, rows, cellWidth, cellHeight } = getGridSettings();
-      if (isHexGrid) {
-        drawHexGrid(cols, rows, cellWidth);
-      } else {
-        drawSquareGrid(cols, rows, cellWidth, cellHeight);
-      }
-    }
-
-    function drawSquareGrid(cols, rows, cellWidth, cellHeight) {
-      ctx.strokeStyle = '#00FF00';
-      // Draw grid lines to cover entire canvas
-      for (let i = 0; i <= cols; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * cellWidth, 0);
-        ctx.lineTo(i * cellWidth, canvas.height);
-        ctx.stroke();
-      }
-      for (let j = 0; j <= rows; j++) {
-        ctx.beginPath();
-        ctx.moveTo(0, j * cellHeight);
-        ctx.lineTo(canvas.width, j * cellHeight);
-        ctx.stroke();
-      }
-    }
-
-    function drawHexGrid(cols, rows, radius) {
-      ctx.strokeStyle = '#00FFFF';
-      const hexHeight = Math.sqrt(3) * radius;
-      const hexWidth = 2 * radius;
-      const horizSpacing = hexWidth * 0.75;
-
-      // Calculate rows/columns needed to cover canvas
-      const verticalCells = Math.ceil(canvas.height / hexHeight);
-      const horizontalCells = Math.ceil(canvas.width / horizSpacing);
-
-      for (let r = 0; r < verticalCells; r++) {
-        for (let c = 0; c < horizontalCells; c++) {
-          const x = c * horizSpacing;
-          const y = r * hexHeight + (c % 2) * (hexHeight / 2);
-          drawHexagon(x, y, radius);
-        }
-      }
-    }
-
-    function drawHexagon(x, y, radius) {
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) {
-        const angle = (Math.PI / 3) * i;
-        const px = x + radius * Math.cos(angle);
-        const py = y + radius * Math.sin(angle);
-        ctx.lineTo(px, py);
-      }
-      ctx.closePath();
-      ctx.stroke();
-    }
-  </script>
-</body>
+// Append the link, trigger click, and then remove it
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+}
+</script> </body>
 </html>
