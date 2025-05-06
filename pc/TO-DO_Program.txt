@@ -1,0 +1,22 @@
+PC Configuration Tool
+Used to create and manage map sets.
+
+Features:
+
+Upload Background: Supports GIF or video formats.
+
+Grid Editor:
+
+Choose between hexagon or square overlay.
+
+Adjust grid size and cell proportions (width:height).
+
+Assign Audio:
+
+Upload 1 background music track per map set.
+
+Assign up to 9 sound effects to buttons 1–9.
+
+Output:
+
+Each map set is saved to the SD card with its media and configuration files, ready for the Raspberry Pi to load.

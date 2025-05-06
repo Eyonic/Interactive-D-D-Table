@@ -1,0 +1,44 @@
+Raspberry Pi Zero – 10-Button Interactive Soundboard with Live Map Display
+
+Overview:
+This project uses a Raspberry Pi Zero with a 10-button interface to display a live map and play background music. It allows the user to switch between different "map sets" and trigger sound effects, all while maintaining smooth audio and visual feedback.
+
+Features:
+
+Live map display (GIF or video format)
+
+Background music auto-starts with each map
+
+Dynamic sound effect buttons (with volume ducking)
+
+Map and sound set selection via dedicated button
+
+Button Layout:
+
+Button 0: "Set" button – used to select a map and corresponding audio set
+
+Buttons 1–9: Sound effect triggers (1 per button)
+
+Usage Logic:
+
+Press Button 0 (Set) followed by Button X (1–9) to load Map X.
+
+The system:
+
+Displays the associated map (as a looping video or animated GIF)
+
+Overlays a grid of hexagons with correct aspect ratio (predefined via PC)
+
+Plays the designated background music for that map
+
+Loads sound effects mapped to Buttons 1–9 for that specific set
+
+Sound Effect Behavior:
+
+When any sound effect button (1–9) is pressed:
+
+Background music volume is reduced ("ducked")
+
+The sound effect is played
+
+Background music returns to normal volume after playback
