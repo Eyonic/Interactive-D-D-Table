@@ -4,7 +4,7 @@ Bring your D&D sessions to life with dynamic maps, sound effects, and immersive 
 
 ## 🧙 Overview
 
-This project turns any TV into a living, interactive Dungeons & Dragons map using a **Raspberry Pi Zero WH** and a **custom 10-key controller**. It’s designed to enhance immersion without the need for laptops, touchscreens, or mouse input.
+This project turns any TV into a living, interactive Dungeons & Dragons map using a Raspberry Pi Zero WH and a custom 10-key controller. It’s designed to enhance immersion without the need for laptops, touchscreens, mouse input, or internet. The DM sets up the campaign using a custom PC program, then transfers / upload it to the Raspberry Pi's SD card.
 
 ## 🎯 Features
 
@@ -30,14 +30,7 @@ This project turns any TV into a living, interactive Dungeons & Dragons map usin
 1. The Raspberry Pi displays a top-down map on the TV.
 2. The keypad connects via GPIO or USB (depending on your build).
 3. Pressing a button triggers sound effects or changes the map.
-4. Background music updates automatically based on the current map.
+4. Background music/ sound effects updates automatically based on the current map.
 
-## 🚀 Getting Started
 
-Coming soon:
-- Wiring diagrams
-- Software installation instructions
-- Example maps and sounds
-
-## 📂 Folder Structure (planned)
 
