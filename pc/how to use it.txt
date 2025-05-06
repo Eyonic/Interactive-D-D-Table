@@ -1,0 +1,14 @@
+How It Works:
+Run the Python script on your PC.
+
+It will prompt you to upload:
+
+Background map (Image or Video).
+
+Background music for the map.
+
+9 sound effects for the map.
+
+It will overlay the grid on the background map, and you can choose whether to use a hexagonal or square grid.
+
+The final output is saved as an image (and optionally converted to video).

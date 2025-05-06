@@ -1,0 +1,49 @@
+How to Set Up:
+Prepare Your Files:
+
+Ensure you have your media organized in directories on the Raspberry Pi, such as:
+
+bash
+Kopiëren
+Bewerken
+/sets/set1/map.mp4
+/sets/set1/bgm.mp3
+/sets/set1/sfx1.wav
+...
+GPIO Pins:
+
+Make sure the GPIO pins are correctly wired to your physical buttons. In the script, BUTTON_PINS maps each button to a GPIO pin.
+
+Dependencies:
+
+Install necessary libraries if you don’t have them:
+
+bash
+Kopiëren
+Bewerken
+sudo apt-get install python3-pygame
+omxplayer should already be installed by default.
+
+Autostart on Boot (Optional):
+If you want the script to run automatically on boot, add it to your Pi's .bashrc or set up a systemd service:
+
+Open .bashrc for editing:
+
+bash
+Kopiëren
+Bewerken
+nano ~/.bashrc
+Add the following line at the end:
+
+bash
+Kopiëren
+Bewerken
+python3 /home/pi/soundboard_project/main.py &
+Run the Script:
+
+Execute your script:
+
+bash
+Kopiëren
+Bewerken
+python3 /home/pi/soundboard_project/main.py

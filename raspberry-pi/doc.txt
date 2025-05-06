@@ -1,0 +1,24 @@
+Explanation:
+GPIO Setup:
+
+The script uses the RPi.GPIO library to listen for button presses.
+
+Button 0 (Set) changes the map, while Buttons 1-9 trigger the sound effects.
+
+Media Management:
+
+Video: We use omxplayer to display a looping video on the TV using the Raspberry Pi’s micro HDMI port.
+
+Audio: pygame.mixer handles the background music and sound effects. Music is "ducked" when a sound effect is played, lowering its volume temporarily.
+
+Map Set Switching:
+
+When Button 0 is pressed, followed by any other button, it triggers a map switch (load_set()) to load new media (map and audio).
+
+Sound Effect Logic:
+
+Each map has 9 sound effects. When any of the SFX buttons (1-9) is pressed, it plays the corresponding sound effect (play_sfx()), temporarily lowering the background music volume.
+
+Continuous Operation:
+
+The script continuously listens for button presses, updating the media accordingly.
