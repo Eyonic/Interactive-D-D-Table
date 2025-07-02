@@ -35,6 +35,10 @@ Press Set, then Button 3 → instantly switches to Map 3, with its associated ba
 2. The keypad connects via GPIO or USB (depending on your build).
 3. Pressing a button triggers sound effects or changes the map.
 4. Background music/ sound effects updates automatically based on the current map.
+## 🖥️ Creating Map Sets
+
+Run `python3 pc/setup_map_set.py` and follow the prompts to generate a map directory with grid, music, and sound effects. The output is placed under `sets/<name>` and can be copied to the Raspberry Pi.
+
 
 
 
