@@ -36,6 +36,14 @@ Press Set, then Button 3 → instantly switches to Map 3, with its associated ba
 3. Pressing a button triggers sound effects or changes the map.
 4. Background music/ sound effects updates automatically based on the current map.
 
+## ⚙️ Raspberry Pi Setup
+
+Install the required Python packages before running the Raspberry Pi script:
+
+```bash
+pip install -r raspberry-pi/requirements.txt
+```
+
 
 
 <a href="https://www.buymeacoffee.com/Eyonic" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
