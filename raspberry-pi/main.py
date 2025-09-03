@@ -1,3 +1,4 @@
+import os
 import RPi.GPIO as GPIO
 import pygame
 import subprocess
@@ -20,13 +21,20 @@ pygame.mixer.init()
 # Media management
 video_proc = None
 sfx_library = {}
+sfx_channel = pygame.mixer.Channel(1)
 
 def play_video(path):
     """Play the map video on loop."""
     global video_proc
     if video_proc:
         video_proc.kill()  # Stop any currently playing video
-    video_proc = subprocess.Popen(['omxplayer', '--loop', '--no-osd', path])
+    if not os.path.exists(path):
+        print(f"Video file not found: {path}")
+        return
+    try:
+        video_proc = subprocess.Popen(['omxplayer', '--loop', '--no-osd', path])
+    except Exception as exc:
+        print(f"Failed to play video {path}: {exc}")
 
 def load_set(set_num):
     """Load the map and audio set, and start the media."""
@@ -37,8 +45,15 @@ def load_set(set_num):
     play_video(f'sets/set{set_num}/map.mp4')
 
     # Start the background music
-    pygame.mixer.music.load(f'sets/set{set_num}/bgm.mp3')
-    pygame.mixer.music.play(-1)  # Loop the background music indefinitely
+    bgm_path = f'sets/set{set_num}/bgm.mp3'
+    if os.path.exists(bgm_path):
+        try:
+            pygame.mixer.music.load(bgm_path)
+            pygame.mixer.music.play(-1)  # Loop the background music indefinitely
+        except pygame.error as exc:
+            print(f"Failed to load background music {bgm_path}: {exc}")
+    else:
+        print(f"Background music file not found: {bgm_path}")
 
     # Load sound effects for this set
     load_sfx(set_num)
@@ -48,15 +63,22 @@ def load_sfx(set_num):
     global sfx_library
     sfx_library.clear()
     for i in range(1, 10):
-        sfx_library[i] = pygame.mixer.Sound(f'sets/set{set_num}/sfx{i}.wav')
+        path = f'sets/set{set_num}/sfx{i}.wav'
+        if os.path.exists(path):
+            try:
+                sfx_library[i] = pygame.mixer.Sound(path)
+            except pygame.error as exc:
+                print(f"Failed to load sound effect {path}: {exc}")
+        else:
+            print(f"Sound effect file not found: {path}")
 
 def play_sfx(button_num):
     """Play the sound effect and duck the background music."""
     pygame.mixer.music.set_volume(0.3)  # Duck the music
     sfx = sfx_library.get(button_num)
     if sfx:
-        sfx.play()
-        while pygame.mixer.get_busy():  # Wait for the sound to finish
+        sfx_channel.play(sfx)
+        while sfx_channel.get_busy():  # Wait for the sound to finish
             sleep(0.1)
     pygame.mixer.music.set_volume(1.0)  # Restore music volume
 
