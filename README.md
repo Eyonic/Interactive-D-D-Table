@@ -44,23 +44,6 @@ Install the required Python packages before running the Raspberry Pi script:
 pip install -r raspberry-pi/requirements.txt
 ```
 
-## 🌐 PC Web Interface
-
-Serve the web tools from your computer and connect from phones on the same network.
-
-Install the dependencies:
-
-```bash
-pip install -r pc/requirements.txt
-```
-
-Run the server (binds to all interfaces by default):
-
-```bash
-python pc/server.py
-```
-
-Open `http://<your-pc-ip>:5000` in any browser to view the map tool.
 
 
 
